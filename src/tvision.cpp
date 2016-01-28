@@ -8,6 +8,8 @@
 #include "../inc/voiceprocess.h"
 #include "../inc/netprocess.h"
 
+#include <windows.h>
+
 #include "../inc/threadpool.h"
 
 //Number of processor's kernels (need to effictively load processor by creating number of threads)
@@ -30,6 +32,11 @@ struct staskPri{
 
 int main(int argc, char **argv)
 {
+	SYSTEM_INFO sysinfo;
+	GetSystemInfo(&sysinfo);
+
+	int numCPU = sysinfo.dwNumberOfProcessors;
+
 	CVCapProcess VCapProcess;
 	CVideoProcess PointsProcess;
 	CVoiceProcess VoiceProcess;
