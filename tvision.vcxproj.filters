@@ -18,5 +18,40 @@
     <ClCompile Include="src\tvision.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\netprocess.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\videoprocess.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\voiceprocess.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\taskprocess.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vcapprocess.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\threadpool.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\netprocess.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\taskprocess.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\videoprocess.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\voiceprocess.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\vcapprocess.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
