@@ -12,9 +12,13 @@ CVoiceProcess::~CVoiceProcess()
 	//data deleted in derived class!
 }
 
-int CVoiceProcess::processRun(int data)
+CVoiceProcess *CVoiceProcess::processRun(sharedData *psharedData)
 {
 	volatile int i;
-	for (i = 0 < 100000; i++;){};
-	return 1;
+	for (i = 0; i < NCYCLE; i++){};
+
+	psharedData->VVocflg = freeState;
+
+	std::cout << "CVoiceProcess finished" << std::endl;
+	return this;
 }

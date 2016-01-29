@@ -12,7 +12,9 @@ CTaskProcess::~CTaskProcess()
 	//data deleted in derived class!
 }
 
-int CTaskProcess::processRun(int data)
+CTaskProcess *CTaskProcess::processRun(sharedData *psharedData)
 {
-	return 1;
+	std::cout << "CTaskProcess finished" << std::endl;
+
+	return this;
 }

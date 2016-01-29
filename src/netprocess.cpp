@@ -12,9 +12,13 @@ CNetProcess::~CNetProcess()
 	//data deleted in derived class!
 }
 
-int CNetProcess::processRun(int data)
+CNetProcess *CNetProcess::processRun(sharedData *psharedData)
 {
 	volatile int i;
-	for (i = 0 < 100000; i++;){};
-	return 1;
+	for (i = 0; i < NCYCLE;i++){};
+
+	psharedData->VNetflg = freeState;
+
+	std::cout << "CNetProcess finished" << std::endl;
+	return this;
 }

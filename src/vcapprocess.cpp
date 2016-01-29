@@ -12,9 +12,13 @@ CVCapProcess::~CVCapProcess()
 	//data deleted in derived class!
 }
 
-int CVCapProcess::processRun(int data)
+CVCapProcess *CVCapProcess::processRun(sharedData *psharedData)
 {
 	volatile int i;
-	for (i = 0 < 100000; i++;){};
-	return 1;
+	for (i = 0; i < NCYCLE; i++){};
+
+	psharedData->VCapflg = freeState;
+
+	std::cout << "CVCapProcess finished" << std::endl;
+	return this;
 }

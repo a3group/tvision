@@ -6,6 +6,8 @@
 
 #include "taskprocess.h"
 
+#include "shareddata.h"
+
 class CVoiceProcess :public CTaskProcess
 {
 public:
@@ -14,7 +16,7 @@ public:
 
 	~CVoiceProcess();
 
-	int processRun(int);
+	CVoiceProcess *processRun(sharedData *psharedData);
 };
 
 #endif // _VOICEPROCESS_H

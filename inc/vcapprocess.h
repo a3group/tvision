@@ -6,6 +6,8 @@
 
 #include "taskprocess.h"
 
+#include "shareddata.h"
+
 class CVCapProcess :public CTaskProcess
 {
 public:
@@ -14,7 +16,7 @@ public:
 
 	~CVCapProcess();
 
-	int processRun(int);
+	CVCapProcess *processRun(sharedData *psharedData);
 };
 
 #endif // _VCAPPROCESS_H

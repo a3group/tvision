@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "taskprocess.h"
+#include "shareddata.h"
 
 class CNetProcess :public CTaskProcess
 {
@@ -14,7 +15,7 @@ public:
 
 	~CNetProcess();
 
-	int processRun(int);
+	CNetProcess *processRun(sharedData *psharedData);
 };
 
 #endif // _NETPROCESS_H

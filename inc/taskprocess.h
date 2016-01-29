@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#include "shareddata.h"
+
 class CTaskProcess
 {
 public:
@@ -12,7 +14,7 @@ public:
 
 	virtual ~CTaskProcess();
 
-	virtual int processRun(int);
+	virtual CTaskProcess * processRun(sharedData *psharedData);
 };
 
 #endif // _TASKPROCESS_H

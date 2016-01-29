@@ -11,114 +11,93 @@
 #include <windows.h>
 
 #include "../inc/threadpool.h"
-
-//Number of processor's kernels (need to effictively load processor by creating number of threads)
-const int nKernels = 4;
-//Number of tasks (not need to be equal number of kernel)
-const int nTasks = 4;
+#include "../inc/shareddata.h"
 
 using namespace std;
-
-enum taskState{
-	free = 0,
-	busy,
-	need
-};
 
 struct staskPri{
 	CTaskProcess *pCTaskProcess;
 	taskState state;
-}
+	taskState *tstate;
+};
 
-int main(int argc, char **argv)
+int main()
 {
+	//Number of tasks (not need to be equal number of kernel)
+	const int nTasks = 4;
+
 	SYSTEM_INFO sysinfo;
 	GetSystemInfo(&sysinfo);
 
-	int numCPU = sysinfo.dwNumberOfProcessors;
+	//Number of processor's kernels (need to effictively load processor by creating number of threads)
+	const int nKernels = sysinfo.dwNumberOfProcessors;
 
 	CVCapProcess VCapProcess;
-	CVideoProcess PointsProcess;
+	CVideoProcess VideoProcess;
 	CVoiceProcess VoiceProcess;
 	CNetProcess NetProcess;
 
 	vector<staskPri> tasksPri;
 	tasksPri.resize(nTasks);
-	tasksPri[0].pCTaskProcess = &VCapProcess; tasksPri[0].state = need;
-	tasksPri[1].pCTaskProcess = &CVideoProcess; tasksPri[1].state = need;
-	tasksPri[2].pCTaskProcess = &CVoiceProcess; tasksPri[2].state = need;
-	tasksPri[3].pCTaskProcess = &CNetProcess; tasksPri[3].state = need;
 
-	// create thread pool with 4 worker threads
-	ThreadPool poold(nKernels);
+	sharedData ssharedData;
 
-	//creating first load at pools
-	auto r1 = poold.runAsync<int>([](int i){return i});
-	auto r2 = poold.runAsync<int>([](int i){return i});
-	auto r3 = poold.runAsync<int>([](int i){return i});
-	auto r4 = poold.runAsync<int>([](int i){return i});
+	tasksPri[0].pCTaskProcess = &VCapProcess; tasksPri[0].state = needState; tasksPri[0].tstate = &ssharedData.VCapflg;
+	tasksPri[1].pCTaskProcess = &VideoProcess; tasksPri[1].state = needState; tasksPri[1].tstate = &ssharedData.VVidflg;
+	tasksPri[2].pCTaskProcess = &VoiceProcess; tasksPri[2].state = needState; tasksPri[2].tstate = &ssharedData.VVocflg;
+	tasksPri[3].pCTaskProcess = &NetProcess; tasksPri[3].state = needState; tasksPri[3].tstate = &ssharedData.VNetflg;
 
-/*
-	auto r1 = poold.runAsync<int>(&CVideoProcess::processRun, &PointsProcess, 5);
-	auto r2 = poold.runAsync<int>(&CVoiceProcess::processRun, &VoiceProcess, 4);
-	auto r3 = poold.runAsync<int>(&CVCapProcess::processRun, &VCapProcess, 5);
-	auto r4 = poold.runAsync<int>(&CNetProcess::processRun, &NetProcess, 4);
-*/
+	//start processes
+	ssharedData.VCapflg = needState;
+	ssharedData.VVidflg = needState;
+	ssharedData.VVocflg = needState;
+	ssharedData.VNetflg = needState;
 
-	vector<int> state = {0,0,0,0};
+	ThreadPool pool(nKernels);
+	std::vector< std::future<int> > results;
 
-	//while(1){
-	//	checking pool size
-	//	if(pool.size == FULL){
-	//		sleep(1);
-	//		continue;
-	//	}
+	int cycle = 0;
+	while (1){
+		//add tasks to the pool
+		for (int i = 0; i < nTasks; i++) {
+			if (*tasksPri[i].tstate == needState){
+				*tasksPri[i].tstate = busyState;
+				CTaskProcess *pCTaskProcess = tasksPri[i].pCTaskProcess;
 
-	//	for_each(tasksPri.begin, tasksPri.end, [](staskPri &task){
-	//		if(task.state == need){
-	//			//add to pool if free
-
-	//			task.state = need;
-	//		}
-	//	})
-	//}
-
-	//here get tasks from task's queue
-	while(1){
-		if (r1->ready){
-			state[0] = 1;
-		}
-		if (r2->ready){
-			state[1] = 1;
-		}
-		if (r3->ready){
-			state[2] = 1;
-		}
-		if (r4->ready){
-			state[3] = 1;
+				results.emplace_back(
+					pool.enqueue(
+					[pCTaskProcess, &ssharedData]() {
+					pCTaskProcess->processRun(&ssharedData);
+					return 0;
+				}));
+			}
 		}
 
-		//dispatcher of tasks
-		for (int i = 0; i < static_cast<int> (state.size()); i++){
-			if (state[i]){
-				state[i] = 0;
-
-				if (i == 0){
-					r1 = poold.runAsync<int>(&CVideoProcess::processRun, &PointsProcess, 5);
+		//check pool's tasks
+		while (results.size()){
+			for (auto it = results.begin(); it != results.end();)
+			{
+				if ((*it)._Is_ready()){
+					std::cout << cycle++ << "   " << (*it).get() << std::endl;
+					results.erase(it);
+					it = results.begin();
+					continue;
 				}
-				if (i == 1){
-					r2 = poold.runAsync<int>(&CVoiceProcess::processRun, &VoiceProcess, 4);
-				}
-				if (i == 2){
-					r3 = poold.runAsync<int>(&CVCapProcess::processRun, &VCapProcess, 5);
-				}
-				if (i == 3){
-					r4 = poold.runAsync<int>(&CNetProcess::processRun, &NetProcess, 4);
+				else{
+					it++;
 				}
 			}
 		}
-	};
 
-	return 0;
+		//start processes (TODO dispatcher of tasks)
+		if (ssharedData.VCapflg == freeState) ssharedData.VCapflg = needState;
+		if (ssharedData.VVidflg == freeState) ssharedData.VVidflg = needState;
+		if (ssharedData.VVocflg == freeState) ssharedData.VVocflg = needState;
+		if (ssharedData.VNetflg == freeState) ssharedData.VNetflg = needState;
+
+		Sleep(1);
+	}
+
+	//never get here
+	while (1){};
 }
-

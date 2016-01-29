@@ -6,6 +6,8 @@
 
 #include "taskprocess.h"
 
+#include "shareddata.h"
+
 class CVideoProcess :public CTaskProcess
 {
 public:
@@ -14,7 +16,7 @@ public:
 
 	~CVideoProcess();
 
-	int processRun(int);
+	CVideoProcess *processRun(sharedData *psharedData);
 };
 
 #endif // _VIDEOPROCESS_H

@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\netprocess.h" />
+    <ClInclude Include="inc\shareddata.h" />
     <ClInclude Include="inc\taskprocess.h" />
     <ClInclude Include="inc\threadpool.h" />
     <ClInclude Include="inc\vcapprocess.h" />

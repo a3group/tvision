@@ -53,5 +53,8 @@
     <ClInclude Include="inc\vcapprocess.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="inc\shareddata.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
