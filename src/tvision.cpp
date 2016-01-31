@@ -1,3 +1,4 @@
+#if 0
 #include <iostream>
 #include <vector>
 #include <array>
@@ -100,4 +101,73 @@ int main()
 
 	//never get here
 	while (1){};
+}
+#endif
+
+
+#include "ffft/FFTRealFixLen.h"
+
+#define _USE_MATH_DEFINES
+//#include <cmath>
+#include <math.h>
+
+#include "fft.h"
+
+#define FFTSIZE 3
+#define FFTLEN (1<<FFTSIZE)
+
+#define OTHER_FFFT_LIB
+
+#include "../inc/netprocess.h"
+
+int main()
+{
+#ifdef OTHER_FFFT_LIB
+
+	ffft::FFTRealFixLen <FFTSIZE> fft_object;
+
+   float x [(FFTLEN<<1)];
+   float f [(FFTLEN<<1)];
+   for(int i=0;i< FFTLEN*2;i++){
+	   x[i]=0.0;
+	   f[i]=0.0;
+   }
+
+   for(int i=0;i< FFTLEN;i++){
+	   x[i] = (float)sinf((float)2.0f*M_PI*0.1f*i);
+   }
+
+	for(int k=0;k<10000;k++){
+		fft_object.do_fft (f, x);     // x (real) --FFT---> f (complex)
+		fft_object.do_ifft (f, x);    // f (complex) --IFFT--> x (real)
+		fft_object.rescale (x);       // Post-scaling should be done after FFT+IFFT
+	}
+#else
+	CFft fftobj;
+
+	short table[32];
+	float FftW[FFTLEN*2];
+	float realData[FFTLEN];
+	float complexData[(FFTLEN<<1)];
+
+	fftobj.doBitrevIdx(table, FFTLEN);
+	fftobj.doGenTwiddle(FftW, FFTLEN);
+	fftobj.doBitrev(FftW, (FFTLEN>>1));
+
+	for(int i=0;i<FFTLEN;i++){
+		complexData[i*2+0] = sin((float)(2.0*M_PI*0.1*i));
+		complexData[i*2+1] = 0.0f;
+	}
+
+	for(int k=0;k<10000;k++){
+		fftobj.doFfft(complexData, FftW, FFTLEN);	//forward transform
+		fftobj.doIfft(complexData, FftW, FFTLEN);	//Inverse transform
+		fftobj.doRescale(complexData, FFTLEN);		//rescale data
+	}
+#endif
+
+
+	msg_poll();
+
+	return 0;
 }

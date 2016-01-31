@@ -13,6 +13,15 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{fc14514e-8cdd-42e0-aeaa-7c96ca1cef33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\inc">
+      <UniqueIdentifier>{9ce1e35f-d3d5-4187-907e-2f4f4bb3902c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\src">
+      <UniqueIdentifier>{196cf4cc-ffeb-4ec8-9eac-8037e75bf95a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\tvision.cpp">
@@ -32,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="src\vcapprocess.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\src\fft.cpp">
+      <Filter>lib\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="inc\shareddata.h">
       <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\inc\fft.h">
+      <Filter>lib\inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,4 +18,6 @@ public:
 	CNetProcess *processRun(sharedData *psharedData);
 };
 
+int msg_poll(void);
+
 #endif // _NETPROCESS_H
